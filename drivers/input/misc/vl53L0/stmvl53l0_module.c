@@ -950,6 +950,8 @@ static void stmvl53l0_enter_sar(struct stmvl53l0_data *data, uint8_t from)
 	if (data->enable_ps_sensor == 0)
 		stmvl53l0_start(data);
 
+	memset(&RMData, 0, sizeof(RMData));
+
 	papi_func_tbl->SetDeviceMode(data,
 		VL53L0_DEVICEMODE_SINGLE_RANGING);
 
@@ -1225,6 +1227,7 @@ struct timeval tv;
 int newv;
 
 do_gettimeofday(&tv);
+memset(&RMData, 0, sizeof(RMData));
 papi_func_tbl->GetRangingMeasurementData(vl53l0_dev, &RMData);
 
 vl53l0_dbgmsg_en("which MODE =%d\n", data->w_mode);
@@ -1455,6 +1458,7 @@ struct device_attribute *attr, const char *buf, size_t count)
 		/* to start */
 		stmvl53l0_start(data);
 	}
+	memset(&RMData, 0, sizeof(RMData));
 	if (VL53L0_DEVICEMODE_SINGLE_RANGING == data->d_mode) {
 		vl53l0_errmsg("Call of VL53L0_DEVICEMODE_SINGLE_RANGING\n");
 		Status = papi_func_tbl->SetGpioConfig(data, 0, 0,
@@ -1536,7 +1540,6 @@ struct device_attribute *attr, const char *buf, size_t count)
 		hdata.HistogramData[hdata.FirstBin+6], hdata.HistogramData[hdata.FirstBin+7]);
 		vl53l0_errmsg("VL53L0_perform_single_histogram	9 %d, 10 %d, 11 %d, 12 %d\n", hdata.HistogramData[hdata.FirstBin+8], hdata.HistogramData[hdata.FirstBin+9],
 		hdata.HistogramData[hdata.FirstBin+10], hdata.HistogramData[hdata.FirstBin+11]);
-
 		VL53L0_perform_single_histogram(data, 2, 1, 3, &hdata);
 		vl53l0_errmsg("VL53L0_perform_single_histogram	start_bin %d, NumberOfBins %d, ErrorStatus %d\n", hdata.FirstBin, hdata.NumberOfBins, hdata.ErrorStatus);
 		vl53l0_errmsg("VL53L0_perform_single_histogram	1 %d, 2 %d, 3 %d, 4 %d\n", hdata.HistogramData[hdata.FirstBin], hdata.HistogramData[hdata.FirstBin+1],
